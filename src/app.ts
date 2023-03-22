@@ -1,8 +1,12 @@
-import express, { Request, Response } from 'express'
-const app = express()
+import express, { Request, Response } from 'express';
+import { userRoute } from './modules/user/userRoute.js';
+const app = express();
 import  sequelize  from './database/db.js';
+import * as dotenv from 'dotenv';
+dotenv.config()
 
-try {
+
+try{
     sequelize.authenticate()
     .then(() => console.log('conexão com banco de dados realizada!'))
 } catch (error) {
@@ -11,7 +15,7 @@ try {
 
 app.use(express.json());
 
-import { userRoute } from './modules/user/userRoute.js';
+
 
 app.use('/user', userRoute);
 

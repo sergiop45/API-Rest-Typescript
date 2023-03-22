@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { randomUUID } from 'crypto';
+import { UserModel } from '../../database/Models/UserModel.js';
 
 interface IUser {
     id: string;
@@ -11,14 +12,13 @@ interface IUser {
 const userMemory: IUser[] = []
 
 export const userIndex = async (req: Request, res: Response) => {
-    res.json(userMemory);
+    const users = await UserModel.findAll()
+    res.json(users);
 }
 
 export const userCreate = async (req: Request, res: Response) => {
-    const { name, email, password } = req.body;
-    const id = randomUUID()
-
-    userMemory.push({ id, name, email, password })
+    const newuser = req.body;
+    const user = await UserModel.create(newuser)
     res.status(200).json({message: 'user created!'})
 }
 
