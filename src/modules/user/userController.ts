@@ -1,15 +1,8 @@
 import { Request, Response } from 'express'
-import { randomUUID } from 'crypto';
+import { Hash, randomUUID } from 'crypto';
 import { UserModel } from '../../database/Models/UserModel.js';
+import  bcrypt  from 'bcrypt';
 
-interface IUser {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
-}
-
-const userMemory: IUser[] = []
 
 export const userIndex = async (req: Request, res: Response) => {
     const users = await UserModel.findAll()
@@ -17,12 +10,14 @@ export const userIndex = async (req: Request, res: Response) => {
 }
 
 export const userCreate = async (req: Request, res: Response) => {
-    const newuser = req.body;
+    const newuser  = req.body;
+
+    newuser.password = await bcrypt.hash(newuser.password, 10);
 
     try {
 
-        const user = await UserModel.create(newuser)
-        res.status(201).json({message: 'user created!'})
+        const user = await UserModel.create(newuser);
+        res.status(201).json({message: 'user created!', user})
 
     } catch (error) {
         res.status(500).json({message: "Erro ao tentar criar usuario! erro: "+error});

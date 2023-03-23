@@ -1,5 +1,6 @@
 import { Model, Column, Table, DataType } from "sequelize-typescript";
 import IUser from "../../Interfaces/IUser";
+import bcrypt from 'bcrypt';
 
 @Table
 export class UserModel extends Model<UserModel> {
@@ -12,4 +13,6 @@ export class UserModel extends Model<UserModel> {
 
     @Column(DataType.STRING)
     password!: string;
+
+
 }

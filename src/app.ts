@@ -3,6 +3,7 @@ import { userRoute } from './modules/user/userRoute.js';
 const app = express();
 import  sequelize  from './database/db.js';
 import * as dotenv from 'dotenv';
+import { loginRouter } from './modules/login/loginRoute.js';
 dotenv.config()
 
 
@@ -18,6 +19,7 @@ app.use(express.json());
 
 
 app.use('/user', userRoute);
+app.use('/login', loginRouter);
 
 app.get('/api', (req: Request, res: Response) => {
     res.status(200).json({message: 'bem-vindo a API!'})
