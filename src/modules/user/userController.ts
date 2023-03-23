@@ -18,20 +18,68 @@ export const userIndex = async (req: Request, res: Response) => {
 
 export const userCreate = async (req: Request, res: Response) => {
     const newuser = req.body;
-    const user = await UserModel.create(newuser)
-    res.status(200).json({message: 'user created!'})
+
+    try {
+
+        const user = await UserModel.create(newuser)
+        res.status(201).json({message: 'user created!'})
+
+    } catch (error) {
+        res.status(500).json({message: "Erro ao tentar criar usuario! erro: "+error});
+
+    }
+
 }
 
 export const userShow = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const user = userMemory.find(user => user.id === id)
-    res.json(user);
+    const user = await UserModel.findByPk(id);
+
+    if(!user) {
+        res.status(404).json({message: "usuario não encontrado!"});
+    } else {
+        res.json(user);
+    }
+
 }
 
 export const userDelete = async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const indexUser = userMemory.findIndex(user => user.id === id)
-    userMemory.splice(indexUser, 1)
-    res.json({message: 'user deleted!'})
+    try {
+
+        const user = await UserModel.findByPk(id);
+        if(!user) {
+            res.status(404).json({message: "usuario não encontrado!"});
+        } else {
+            await user.destroy();
+            res.json({message: 'user deleted!'});
+        }
+
+    } catch (error) {
+        res.status(500).json({message: "Erro ao tentar deletar usuario! erro: "+error});
+    }
+
+
+}
+
+export const userUpdate = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { name, email, password } = req.body;
+
+    try {
+
+        const user = await UserModel.findByPk(id);
+
+        if(!user) {
+            res.status(404).json({message: "usuario não encontrado!"});
+        } else {
+            await user.update({name, email, password});
+            res.status(200).json({message: "usuario atualizado!"});
+        }
+
+    } catch (error) {
+        res.status(500).json({message: "Erro ao atualizar usuario!"});
+    }
+
 }

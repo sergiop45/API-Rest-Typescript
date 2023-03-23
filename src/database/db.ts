@@ -14,6 +14,5 @@ const sequelize = new Sequelize(database, 'root', password, {
 
 sequelize.addModels([UserModel])
 
-sequelize.sync({force: true})
 
 export default sequelize;
